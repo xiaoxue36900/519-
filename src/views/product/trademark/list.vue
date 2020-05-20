@@ -53,7 +53,6 @@
     >
     </el-pagination>
     <el-dialog :title="form.id ? '更新' : '添加'" :visible.sync="isShowDialog">
-      <!-- 内部会执行: $emit('update:visible', false) 自动关闭 -->
       <el-form :model="form" style="width: 80%" :rules="rules" ref="tmForm">
         <el-form-item
           label="品牌名称"
@@ -71,13 +70,6 @@
           :label-width="formLabelWidth"
           prop="logoUrl"
         >
-          <!--
-            action: 指定上传图片的接口地址   组件内部向发此地址发送上传文件的ajax请求
-              http://182.92.128.115/admin/product/fileUpload: 不可以, 跨域了
-              /dev-api/admin/product/fileUpload: 可以, 通过代理服务转发, 就没跨域了
-            on-success: 指定上传成功时调用的回调函数
-            before-upload: 指定在准备发送上传图片请求前的回调函数, 如果返回值为false, 不会发出请求
-          -->
           <el-upload
             class="avatar-uploader"
             action="/dev-api/admin/product/fileUpload"
@@ -109,13 +101,13 @@ export default {
 
   data() {
     return {
-      loading: false, //不显示loading
-      trademarks: [], // 当前页的列表数据
-      total: 0, // 总数量
-      page: 1, // 当前页码
-      limit: 3, // 每页数量
+      loading: false,
+      trademarks: [],
+      total: 0,
+      page: 1,
+      limit: 3,
 
-      isShowDialog: false, // 是否显示添加的dialog
+      isShowDialog: false,
       form: {
         tmName: "",
         logoUrl: ""
@@ -123,20 +115,12 @@ export default {
       formLabelWidth: "100px",
 
       rules: {
-        /*
-          品牌名称:
-              必须输入   输入过程中触发校验
-              长度必须在2-10个之间   失去焦点时触发校验
-          品牌LOGO:
-              必须有
-          */
         tmName: [
           {
             required: true,
             message: "请输入品牌名称",
             trigger: "change"
-          } /* 值发生改变时触发 */ /* 失去焦点触发 */,
-          /* { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' } */ /* validator校验器: 用于校验的回调函数 */
+          },
           { validator: this.validateTmName, trigger: "blur" }
         ],
         logoUrl: [{ required: true, message: "请指定LOGO图片" }]
@@ -146,8 +130,6 @@ export default {
 
   mounted() {
     // 测试新定义的接口请求函数
-    // this.$API.trademark.getById(1)
-
     this.getTrademarks();
   },
 
@@ -173,19 +155,9 @@ export default {
       当上传图片成功时调用
       */
     handleLogoSuccess(res, file) {
-      // console.log('---', res, file)
-      // 得到返回的图片url
-      // const logoUrl = file.response.data
       const logoUrl = res.data;
-      // 保存图片url
       this.form.logoUrl = logoUrl;
     },
-
-    /*
-      指定在准备发送上传图片请求前的回调函数, 如果返回值为false, 不会发出请求
-      作用: 限制上传图片的类型与大小
-      要求: 只能上传jpg/png文件，且不超过500kb
-      */
     beforeLogoUpload(file) {
       const isJPGOrPNG = ["image/jpeg", "image/png"].indexOf(file.type) >= 0;
       const isLt500KB = file.size / 1024 < 500;
@@ -253,9 +225,7 @@ export default {
       显示修改界面
       */
     showUpdate(trademark) {
-      // 将当前品牌对象保存到form ==> 用于在dialog中显示
-      // this.form = trademark  // 共用一个对象, 有问题
-      this.form = { ...trademark }; // form与trademark指向的就不是同一个对象      对象的浅拷贝
+      this.form = { ...trademark };
       // 显示
       this.isShowDialog = true;
     },

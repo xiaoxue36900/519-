@@ -77,13 +77,6 @@
           >添加属性值</el-button
         >
         <el-button @click="isShowList = true">取消</el-button>
-        <!--
-            {
-              "attrId": 0,
-              "id": 0,
-              "valueName": "string"
-            }
-           -->
         <el-table border style="margin: 20px 0" :data="attr.attrValueList">
           <el-table-column
             label="序号"
@@ -129,19 +122,23 @@ export default {
 
   data() {
     return {
-      category1Id: "", // 一级分类ID
-      category2Id: "", // 二级分类ID
-      category3Id: "", // 三级分类ID
-      attrs: [], // 所有属性的列表
-
-      isShowList: true, // 是否显示属性列表页面   true: 列表页面, false: 添加或更新页面
+      // 一级分类ID
+      category1Id: "",
+      // 二级分类ID
+      category2Id: "",
+      // 三级分类ID
+      category3Id: "",
+      // 所有属性的列表
+      attrs: [],
+      // 是否显示属性列表页面   true: 列表页面, false: 添加或更新页面
+      isShowList: true,
 
       attr: {
         // 要添加或者修改的平台属性对象
-        attrName: "", // 属性名
-        attrValueList: [], //属性值的列表
-        categoryId: "", // 3级的分类ID
-        categoryLevel: 3 // 只能是3级
+        attrName: "",
+        attrValueList: [],
+        categoryId: "",
+        categoryLevel: 3
       }
     };
   },
@@ -185,7 +182,7 @@ export default {
           value.edit = false;
         } else {
           // 如果已经有了
-          value.valueName = ""; // 清除输入
+          value.valueName = "";
           this.$message.warning("输入的名称已存在");
         }
       }
@@ -208,7 +205,6 @@ export default {
 
     /*
     显示修改属性的界面
-
     */
     showUpdate(attr) {
       // 保存要修改的属性对象
@@ -222,9 +218,9 @@ export default {
     */
     addAttrValue() {
       this.attr.attrValueList.push({
-        attrId: this.attr.id, // 如果是修改属性有值, 如果是添加属性就是undefined
+        attrId: this.attr.id,
         valueName: "",
-        edit: true // 添加的新属性值是编辑模式的
+        edit: true
       });
     },
 
@@ -232,7 +228,6 @@ export default {
     3个级别分类发生改变时的监听回调
     */
     handleCategoryChange({ categoryId, level }) {
-      // console.log('handleCategoryChange', categoryId, level)
       if (level === 1) {
         this.category1Id = categoryId;
         // 重置2级和3级ID和属性列表

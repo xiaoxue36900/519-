@@ -83,6 +83,13 @@
           >添加属性值</el-button
         >
         <el-button @click="isShowList = true">取消</el-button>
+        <!--
+            {
+              "attrId": 0,
+              "id": 0,
+              "valueName": "string"
+            }
+           -->
         <el-table border style="margin: 20px 0" :data="attr.attrValueList">
           <el-table-column
             label="序号"
@@ -140,34 +147,35 @@
 </template>
 
 <script>
-import cloneDeep from "lodash/cloneDeep";
-// 只引入要使用的工具函数
+import cloneDeep from "lodash/cloneDeep"; // 只引入要使用的工具函数
 export default {
   name: "AttrList",
 
   data() {
     return {
-      category1Id: "",
-      // 一级分类ID
-      category2Id: "",
-      // 二级分类ID
-      category3Id: "",
-      // 三级分类ID
-      attrs: [],
+      category1Id: "", // 一级分类ID
+      category2Id: "", // 二级分类ID
+      category3Id: "", // 三级分类ID
+      attrs: [], // 所有属性的列表
 
-      isShowList: true,
+      isShowList: true, // 是否显示属性列表页面   true: 列表页面, false: 添加或更新页面
 
       attr: {
         // 要添加或者修改的平台属性对象
-        attrName: "",
-        attrValueList: [],
-        categoryId: "",
-        categoryLevel: 3
+        attrName: "", // 属性名
+        attrValueList: [], //属性值的列表
+        categoryId: "", // 3级的分类ID
+        categoryLevel: 3 // 只能是3级
       }
     };
   },
 
-  mounted() {},
+  mounted() {
+    // this.category1Id = 2
+    // this.category2Id = 13
+    // this.category3Id = 61
+    // this.getAttrs()
+  },
 
   watch: {
     // 当isShowList发生改变时执行处理: 更新cs组件的disabled状态数据
@@ -199,6 +207,13 @@ export default {
     async save() {
       // 准备参数数据
       const attr = this.attr;
+
+      // 在提交请求前, 需要对收集数据进行整理操作
+      /*
+        属性值名称没有指定, 请求保存的是"" ==> 将属性值名称为""的属性值对象从数组中过滤掉
+        一个属性值都没有指定, 也提交了请求  ==> 不能提交请求
+        请求携带了没有必要的参数数据: edit  ==> 删除此属性
+        */
       attr.attrValueList = attr.attrValueList.filter(value => {
         if (value.valueName !== "") {
           delete value.edit;
@@ -237,6 +252,11 @@ export default {
         // 如果没有, 必须通过$set()来添加一个新属性
         this.$set(value, "edit", true);
       }
+
+      // 找到当前行的Input对象, 让其获得焦点
+      // 此时input界面有没有显示?  没有
+      // 数据更新了, 但界面是最后异步更新的
+      // 必须在界面更新之后才去操作
       this.$nextTick(() => {
         this.$refs[index].focus();
       });
@@ -255,6 +275,7 @@ export default {
             return item.valueName === value.valueName;
           }
         });
+        // console.log('---', value.valueName, isRepeat)
         if (!isRepeat) {
           value.edit = false;
         } else {
@@ -285,7 +306,10 @@ export default {
 
     */
     showUpdate(attr) {
-      this.attr = cloneDeep(attr);
+      // 保存要修改的属性对象
+      // this.attr = attr // 列表与修改界面引用了同一个属性对象  ==> 修改属性名不能取消
+      // this.attr = {...attr} // 对attr进行了一个浅拷贝(克隆)  ==> 修改属性值名称不能取消
+      this.attr = cloneDeep(attr); // 对attr进行了一个深拷贝(克隆) ==> OK
 
       // 显示更新的界面(attr中有数据)
       this.isShowList = false;
@@ -296,10 +320,9 @@ export default {
     */
     addAttrValue() {
       this.attr.attrValueList.push({
-        attrId: this.attr.id,
+        attrId: this.attr.id, // 如果是修改属性有值, 如果是添加属性就是undefined
         valueName: "",
-        // 添加的新属性值是编辑模式的
-        edit: true
+        edit: true // 添加的新属性值是编辑模式的
       });
 
       // 让最后一个属性值的input自动获得焦点 (必须等界面更新之后之能focus)
@@ -312,6 +335,7 @@ export default {
     3个级别分类发生改变时的监听回调
     */
     handleCategoryChange({ categoryId, level }) {
+      // console.log('handleCategoryChange', categoryId, level)
       if (level === 1) {
         this.category1Id = categoryId;
         // 重置2级和3级ID和属性列表

@@ -4,18 +4,18 @@ const api_name = '/admin/acl/user'
 
 export default {
 
-  /* 
+  /*
   获取后台用户分页列表(带搜索)
   */
   getPageList(page, limit, searchObj) {
     return request({
       url: `${api_name}/${page}/${limit}`,
       method: 'get',
-      params: searchObj // url查询字符串或表单键值对
+      params: searchObj 
     })
   },
 
-  /* 
+  /*
   获取某个后台用户
   */
   getById(id) {
@@ -25,7 +25,7 @@ export default {
     })
   },
 
-  /* 
+  /*
   保存一个新的后台用户
   */
   save(user) {
@@ -36,7 +36,7 @@ export default {
     })
   },
 
-  /* 
+  /*
   更新一个后台用户
   */
   updateById(user) {
@@ -47,7 +47,7 @@ export default {
     })
   },
 
-  /* 
+  /*
   获取某个用户的所有角色
   */
   getAssign(userId) {
@@ -57,7 +57,7 @@ export default {
     })
   },
 
-  /* 
+  /*
   保存某个用户的角色
   */
   saveAssign(userId, roleId) {
@@ -71,7 +71,7 @@ export default {
     })
   },
 
-  /* 
+  /*
   删除某个用户
   */
   removeById(id) {
@@ -81,7 +81,7 @@ export default {
     })
   },
 
-  /* 
+  /*
   批量删除多个用户
   */
   removeUsers(ids) {

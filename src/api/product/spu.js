@@ -1,82 +1,58 @@
 /*
-包含所有sku管理的接口请求函数
+包含所有SPU管理的接口请求函数
 */
 import request from "@/utils/request";
 
 export default {
   /*
-  下架SKU
-  GET /admin/product/cancelSale/{skuId}
+  获取所有销售属性列表
+  GET /admin/product/baseSaleAttrList
+  [
+    {
+      "id": 0,
+      "name": "string"
+    }
+  ]
   */
-  cancelSale(skuId) {
-    return request.get(`/admin/product/cancelSale/${skuId}`);
+  getSaleList() {
+    return request.get("/admin/product/baseSaleAttrList");
   },
 
   /*
-  上架SKU
-  GET /admin/product/onSale/{skuId}
+  删除指定id的SPU
+  DELETE /admin/product/deleteSpu/{spuId}
   */
-  onSale(skuId) {
-    return request.get(`/admin/product/onSale/${skuId}`);
+  remove(id) {
+    return request.delete(`/admin/product/deleteSpu/${id}`);
   },
 
   /*
-  删除指定id的sku
-  DELETE /admin/product/deleteSku/{skuId}
+  获取指定id的SPU信息
+  GET /admin/product/getSpuById/{spuId}
   */
-  remove(skuId) {
-    return request.delete(`/admin/product/deleteSku/${skuId}`);
+  get(id) {
+    return request.get(`/admin/product/getSpuById/${id}`);
   },
 
   /*
-  根据指定的SPU的id查询所有对应的SKU的列表
-  GET /admin/product/findBySpuId/{spuId}
+  保存(添加/更新)SPU
+  POST /admin/product/saveSpuInfo
+  POST /admin/product/updateSpuInfo
   */
-  getListBySpuId(spuId) {
-    return request.get(`/admin/product/findBySpuId/${spuId}`);
-  },
-
-  /*
-  根据SKU的id查询SKU的详细信息
-  GET /admin/product/getSkuById/{skuId}
-  */
-  get(skuId) {
-    return request.get(`/admin/product/getSkuById/${skuId}`);
-  },
-
-  /*
-  获取SKU的分页列表
-  GET /admin/product/list/{page}/{limit}
-  */
-  getList(page, limit) {
-    return request.get(`/admin/product/list/${page}/${limit}`);
-  },
-
-  /*
-  保存SKU
-  POST /admin/product/saveSkuInfo
-  POST /admin/product/updateSkuInfo
-  */
-  addUpdate(skuInfo) {
+  addUpdate(spuInfo) {
     return request.post(
-      `/admin/product/${skuInfo.id ? "update" : "save"}SkuInfo`,
-      skuInfo
+      `/admin/product/${spuInfo.id ? "update" : "save"}SpuInfo`,
+      spuInfo
     );
   },
 
   /*
-  获取指定SPU的id对应的图片列表
-  GET /admin/product/spuImageList/{spuId}
+  获取指定分类的SPU分页列表
+  GET /admin/product/{page}/{limit}
   */
-  getSpuImageList(spuId) {
-    return request.get(`/admin/product/spuImageList/${spuId}`);
-  },
-
-  /*
-  获取指定SPU的id对应的销售属性列表
-  GET /admin/product/spuSaleAttrList/{spuId}
-  */
-  getSpuSaleAttrList(spuId) {
-    return request.get(`/admin/product/spuSaleAttrList/${spuId}`);
+  getList(page, limit, category3Id) {
+    return request.get(`/admin/product/${page}/${limit}`, {
+      params: { category3Id }
+    });
   }
 };

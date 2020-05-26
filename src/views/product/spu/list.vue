@@ -17,7 +17,6 @@
           >添加SPU</el-button
         >
         <el-table v-loading="loading" :data="spuList" border stripe>
-          <!-- 序号列 -->
           <el-table-column label="序号" type="index" width="80" align="center">
           </el-table-column>
           <el-table-column label="SPU名称" prop="spuName"> </el-table-column>
@@ -70,11 +69,6 @@
           @size-change="handleSizeChange"
         />
       </div>
-      <!-- @update:visible="isShowSpuForm=$event" -->
-      <!--
-        一旦使用.sync, 必须是一个动态的变量属性值, 且属性名必须使用:
-        但如果不加:, 传递给子组件的总是false值
-       -->
       <SpuForm
         ref="spuForm"
         :visible.sync="isShowSpuForm"
